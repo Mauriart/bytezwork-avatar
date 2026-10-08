@@ -14,6 +14,11 @@
       "types": "./index.d.ts",
       "import": "./agent-robot-avatar.js",
       "default": "./agent-robot-avatar.js"
+    },
+    "./bytezwork": {
+      "types": "./bytezwork-avatar.d.ts",
+      "import": "./bytezwork-avatar.js",
+      "default": "./bytezwork-avatar.js"
     }
   },
   "sideEffects": true,
@@ -37,7 +42,9 @@
     "docs/",
     "README.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "bytezwork-avatar.js",
+    "bytezwork-avatar.d.ts"
   ],
   "keywords": [
     "ai",

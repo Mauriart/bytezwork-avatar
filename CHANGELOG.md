@@ -1,3 +1,10 @@
+## BytezWork avatar — primera versión
+
+- Añade la arañita constructora en SVG como `<bytezwork-avatar>` sobre el motor original.
+- Incluye casco, planos, lápiz, cinturón y cuatro patitas con movimiento suave.
+- Añade demo en español, integración y pruebas de ciclo de vida y movimiento reducido.
+- El build de Pages presenta la arañita y mantiene la demo original en `robot.html`.
+
 # Changelog
 
 All notable user-facing changes to Agent Robot Avatar are documented here.
