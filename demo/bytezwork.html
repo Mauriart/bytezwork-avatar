@@ -49,6 +49,11 @@ const avatar = document.getElementById('avatar');
 const status = document.getElementById('status');
 const labels = {idle:'Lista para construir',inspect:'Pensando cómo resolverlo',waiting:'Trabajando',input:'Escribiendo',send:'Entendido',success:'¡Lo logramos!',surprise:'¡Oh!',love:'Gracias',warning:'Revisando un detalle',failure:'Probemos otra vez',error:'Necesito revisar algo',sleep:'Descansando',wake:'Ya estoy aquí'};
 document.querySelectorAll('[data-action]').forEach(button => button.addEventListener('click', () => {
+  if (button.dataset.action === 'idle') {
+    avatar.reset();
+    status.textContent = labels.idle;
+    return;
+  }
   try { Promise.resolve(avatar.play(button.dataset.action)).catch(() => { status.textContent = 'No se pudo completar el movimiento'; }); }
   catch { status.textContent = 'No se pudo iniciar el movimiento'; }
 }));

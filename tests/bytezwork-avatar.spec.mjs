@@ -30,7 +30,7 @@ test('waiting can be interrupted, then the avatar detaches and reconnects cleanl
   const result = await page.locator('bytezwork-avatar').evaluate(async el => {
     const phases = [];
     el.addEventListener('action-state', e => phases.push(e.detail));
-    el.startWaiting();
+    await el.startWaiting();
     await el.play('surprise');
     el.reset();
     const parent = el.parentNode;
@@ -73,7 +73,7 @@ test('working animates patitas while sleep stops them', async ({ page }) => {
   await page.goto('/demo/bytezwork.html');
   const result = await page.locator('bytezwork-avatar').evaluate(async el => {
     el.setAttribute('motion', 'full');
-    el.startWaiting();
+    await el.startWaiting();
     el._draw(0);
     const limbs = [el._bytezLeftArm, el._bytezRightArm, el._bytezLeftLeg, el._bytezRightLeg];
     const first = limbs.map(limb => limb.getAttribute('transform'));
