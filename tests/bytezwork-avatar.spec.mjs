@@ -7,7 +7,8 @@ test('BytezWork artwork loads with four limbs and no visible robot antenna', asy
   const avatar = page.locator('bytezwork-avatar');
   await expect(avatar).toBeVisible();
   await expect(avatar).toHaveCSS('width', '221px');
-  await expect(avatar.locator('#bytezHelmet')).toBeVisible();
+  await expect(avatar.locator('#bytezHelmet')).toHaveCount(0);
+  await expect(avatar.locator('#bytezCostume')).toHaveCount(0);
   await expect(avatar.locator('#bytezPlans')).toHaveCount(0);
   await expect(avatar.locator('#bytezPencil')).toHaveCount(0);
   await expect(avatar.locator('#antennaDot')).toBeHidden();
@@ -97,7 +98,6 @@ test('design sliders persist, export and restore the chosen proportions', async 
   const chosen = {
     size: 220,
     'eye-size': 72,
-    'helmet-size': 80,
     'arm-length': 85,
     'arm-thickness': 36,
     'leg-length': 120,
@@ -114,14 +114,13 @@ test('design sliders persist, export and restore the chosen proportions', async 
     await expect(avatar).toHaveAttribute(name, String(value));
   }
   const result = await avatar.evaluate(async el => {
-    const helmet = el.shadowRoot.getElementById('bytezHelmet');
     const eye = el.shadowRoot.getElementById('bytezLeftEyeSize');
-    const before = [helmet, eye].map(part => part.getAttribute('transform'));
+    const before = [eye].map(part => part.getAttribute('transform'));
     await el.startWaiting();
     el._draw(performance.now());
     return {
       before,
-      after: [helmet, eye].map(part => part.getAttribute('transform')),
+      after: [eye].map(part => part.getAttribute('transform')),
       armWidth: el._bytezLeftArm.querySelector('.bytezLimbBody').getAttribute('stroke-width'),
       legWidth: el._bytezLeftLeg.querySelector('.bytezLimbBody').getAttribute('stroke-width'),
     };
@@ -131,7 +130,6 @@ test('design sliders persist, export and restore the chosen proportions', async 
   expect(result.legWidth).toBe('28');
   await page.getByRole('button', { name: 'Restablecer', exact: true }).click();
   await expect(page.locator('#eye-size')).toHaveValue('89');
-  await expect(page.locator('#helmet-size')).toHaveValue('83');
   await page.setViewportSize({ width: 375, height: 812 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(errors).toEqual([]);

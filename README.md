@@ -1,6 +1,6 @@
 # BytezWork Avatar
 
-Una arañita constructora interactiva: cuerpo redondo negro, ojos blancos expresivos, cuatro patitas, casco blanco, cinturón sencillo y patitas inferiores cortas y gorditas.
+Una arañita interactiva: cuerpo negro ovalado, ojos blancos expresivos y cuatro patitas curvas distribuidas a los lados, sin casco ni cinturón.
 
 Las cuatro patitas se mueven suavemente en reposo y con más energía al trabajar o celebrar. Se detienen al dormir o activar movimiento reducido. Este avatar no lleva planos ni lápiz.
 
@@ -15,13 +15,13 @@ npm run dev
 
 Abrí `http://localhost:4173/demo/bytezwork.html`. La demo original del robot sigue disponible en `/demo/index.html`.
 
-El diseño inicial usa los valores elegidos por Mauricio: tamaño 221, ojos 89 %, casco 83 %, manos 60 % de largo y grosor 32, pies 100 % de largo y grosor 36. Los ojos están 4 unidades más cerca del centro a cada lado. El cuerpo, el casco y las patitas tienen reflejos suaves para dar volumen.
+La silueta se inspira en la referencia de araña compartida por Mauricio. El tamaño inicial es 221, los ojos conservan el tamaño 89 % con una forma más ovalada y las patitas laterales usan largo 100 % y grosor 20. El cuerpo, los ojos y las patitas conservan reflejos suaves para dar volumen.
 
 Al usar **Pensar**, las manos suben suavemente hacia la barbilla y vuelven a su posición al finalizar o cancelar la acción. Con movimiento reducido se muestra la pose estática.
 
 ## Ajustar el diseño
 
-La demo incluye barras independientes para ojos, casco, largo y grosor de manos y pies, además del tamaño general. Los cambios se aplican al instante, se guardan en este navegador y se pueden compartir con **Copiar ajustes**. **Restablecer** vuelve al diseño inicial.
+La demo incluye barras independientes para ojos, largo y grosor de patitas superiores e inferiores, además del tamaño general. Los cambios se aplican al instante, se guardan en este navegador y se pueden compartir con **Copiar ajustes**. **Restablecer** vuelve al diseño inicial.
 
 El fondo cuadriculado y el brillo pertenecen a la demo.
 
@@ -30,13 +30,12 @@ Los atributos del componente admiten los mismos valores:
 | Atributo | Valor inicial | Rango |
 | --- | --- | --- |
 | `eye-size` | 89 | 40–140 % |
-| `helmet-size` | 83 | 55–110 % |
-| `arm-length` | 60 | 60–140 % |
+| `arm-length` | 100 | 60–140 % |
 | `leg-length` | 100 | 60–160 % |
-| `arm-thickness` | 32 | 12–44 unidades SVG |
-| `leg-thickness` | 36 | 12–44 unidades SVG |
+| `arm-thickness` | 20 | 12–44 unidades SVG |
+| `leg-thickness` | 20 | 12–44 unidades SVG |
 
-Ojos y casco se escalan respecto al dibujo original. El largo de las patitas se escala respecto a sus curvas iniciales; el grosor es independiente. Los valores se limitan al rango y los vacíos o inválidos usan el valor inicial. Los atributos se pueden cambiar durante una animación.
+Los ojos se escalan respecto al dibujo original. El largo de las patitas se escala respecto a sus curvas iniciales; el grosor es independiente. Los valores se limitan al rango y los vacíos o inválidos usan el valor inicial. Los atributos se pueden cambiar durante una animación.
 
 ## Integración
 
@@ -54,7 +53,7 @@ avatar.reset();
 
 El componente hereda la API original: `play`, `reset`, `startWaiting`, `stopWaiting`, `setPointerFollow`, atributos `size`, `color`, `auto-sleep`, `wake-on` y `motion`, y eventos `face-state` y `action-state`.
 
-La antena del robot se oculta en la arañita. Las opciones específicas de la antena no tienen efecto visual en este personaje. El color modifica el cuerpo y las patitas; el casco permanece blanco.
+La antena del robot se oculta en la arañita. Las opciones específicas de la antena no tienen efecto visual en este personaje. El color modifica el cuerpo y las patitas.
 
 ## Desarrollo y validación
 

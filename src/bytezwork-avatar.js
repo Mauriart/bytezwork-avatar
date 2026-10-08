@@ -3,11 +3,10 @@ import AgentRobotAvatar from '../agent-robot-avatar.js';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const DESIGN = {
   'eye-size': [89, 40, 140],
-  'helmet-size': [83, 55, 110],
-  'arm-length': [60, 60, 140],
+  'arm-length': [100, 60, 140],
   'leg-length': [100, 60, 160],
-  'arm-thickness': [32, 12, 44],
-  'leg-thickness': [36, 12, 44],
+  'arm-thickness': [20, 12, 44],
+  'leg-thickness': [20, 12, 44],
 };
 
 // Reuse the upstream eye, action, gesture and lifecycle engine with BytezWork artwork.
@@ -29,23 +28,21 @@ class BytezWorkAvatar extends AgentRobotAvatar {
   }
 
   _applyDesign() {
-    if (!this._bytezHelmet) return;
+    if (!this._bytezEyeScales) return;
     const eyes = this._designValue('eye-size') / 100;
     this._bytezEyeScales.forEach((group, i) => {
       const x = i === 0 ? 86 : 154;
       const inward = i === 0 ? 4 : -4;
-      group.setAttribute('transform', `translate(${inward} 0) translate(${x} 126) scale(${eyes}) translate(${-x} -126)`);
+      group.setAttribute('transform', `translate(${inward} 0) translate(${x} 126) scale(${eyes * 0.62} ${eyes}) translate(${-x} -126)`);
     });
-    this._bytezHelmet.setAttribute('transform',
-      `translate(120 82) scale(${this._designValue('helmet-size') / 100}) translate(-120 -82)`);
     const arms = this._designValue('arm-length') / 100;
     const legs = this._designValue('leg-length') / 100;
     // Length changes the curve only, so thickness stays independently adjustable.
     const paths = [
-      [this._bytezLeftArm, [60, 154, -31, 1, -31, 24], arms, 'arm-thickness'],
-      [this._bytezRightArm, [180, 154, 31, 1, 31, 24], arms, 'arm-thickness'],
-      [this._bytezLeftLeg, [88, 195, -6, 6, -6, 12], legs, 'leg-thickness'],
-      [this._bytezRightLeg, [152, 195, 6, 6, 6, 12], legs, 'leg-thickness'],
+      [this._bytezLeftArm, [60, 140, -35, -5, -36, 33], arms, 'arm-thickness'],
+      [this._bytezRightArm, [180, 140, 35, -5, 36, 33], arms, 'arm-thickness'],
+      [this._bytezLeftLeg, [72, 165, -35, -3, -36, 35], legs, 'leg-thickness'],
+      [this._bytezRightLeg, [168, 165, 35, -3, 36, 35], legs, 'leg-thickness'],
     ];
     this._bytezArmCurves = [];
     paths.forEach(([limb, [x, y, cx, cy, dx, dy], length, thickness], i) => {
@@ -73,8 +70,8 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     this._bytezHandBlend = blend;
     const parent = blend > 0 ? this._bytezHandsFront : this._bytezLimbs;
     const targets = [
-      [60, 154, 65, 192, 105, 169],
-      [180, 154, 175, 192, 135, 169],
+      [60, 140, 65, 188, 105, 162],
+      [180, 140, 175, 188, 135, 162],
     ];
     [this._bytezLeftArm, this._bytezRightArm].forEach((limb, i) => {
       if (limb.parentNode !== parent) parent.append(limb);
@@ -86,15 +83,15 @@ class BytezWorkAvatar extends AgentRobotAvatar {
   _renderShell() {
     super._renderShell();
     const svg = this.shadowRoot.querySelector('svg');
-    svg.setAttribute('aria-label', 'Arañita constructora de BytezWork');
+    svg.setAttribute('aria-label', 'Arañita de BytezWork');
     const style = document.createElement('style');
-    style.textContent = ':host{--face-size:221px} #antennaDot{display:none!important} #bytezCostume,#bytezLimbs,#bytezHandsFront,#bytezDepth{pointer-events:none}';
+    style.textContent = ':host{--face-size:221px} #antennaDot{display:none!important} #bytezLimbs,#bytezHandsFront,#bytezDepth{pointer-events:none}';
     this.shadowRoot.append(style);
 
     // A sampled circle keeps the engine's elastic point-based deformation intact.
     this._baseHeadPoints = Array.from({ length: 96 }, (_, i) => {
       const angle = i * Math.PI * 2 / 96 - Math.PI / 2;
-      return { x: 120 + 80 * Math.cos(angle), y: 134 + 80 * Math.sin(angle) };
+      return { x: 120 + 70 * Math.cos(angle), y: 118 + 76 * Math.sin(angle) };
     });
     this._baseHeadPathD = this._pointsToPath(this._baseHeadPoints);
     this._headShape.setAttribute('d', this._baseHeadPathD);
@@ -103,7 +100,7 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     const finishes = document.createElementNS(SVG_NS, 'defs');
     finishes.innerHTML = `
       <clipPath id="bytezEyeSafeClip">
-        <use href="#headShape" transform="translate(24 25.96) scale(.8)"/>
+        <use href="#headShape" transform="translate(24 23.72) scale(.8)"/>
       </clipPath>
       <radialGradient id="bytezEyeFinish" cx="32%" cy="25%" r="78%">
         <stop offset="0" stop-color="#ffffff"/>
@@ -125,10 +122,6 @@ class BytezWorkAvatar extends AgentRobotAvatar {
         <stop offset=".55" stop-color="#fff" stop-opacity=".035"/>
         <stop offset="1" stop-color="#000" stop-opacity=".16"/>
       </radialGradient>
-      <linearGradient id="bytezHelmetFinish" x1="0" y1="0" x2="0.8" y2="1">
-        <stop offset="0" stop-color="#fff"/><stop offset=".65" stop-color="#f8fafc"/>
-        <stop offset="1" stop-color="#dce3e8"/>
-      </linearGradient>
     `;
     svg.prepend(finishes);
     // A smaller, concentric eye area keeps a visible margin in every expression.
@@ -151,10 +144,10 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     const limbs = document.createElementNS(SVG_NS, 'g');
     limbs.id = 'bytezLimbs';
     limbs.innerHTML = `
-      <g id="bytezLeftArm"><path d="M60 154 Q29 155 29 178" fill="none" stroke="#08090b" stroke-width="32" stroke-linecap="round"/></g>
-      <g id="bytezRightArm"><path d="M180 154 Q211 155 211 178" fill="none" stroke="#08090b" stroke-width="32" stroke-linecap="round"/></g>
-      <g id="bytezLeftLeg"><path d="M88 195 Q82 201 82 207" fill="none" stroke="#08090b" stroke-width="32" stroke-linecap="round"/></g>
-      <g id="bytezRightLeg"><path d="M152 195 Q158 201 158 207" fill="none" stroke="#08090b" stroke-width="32" stroke-linecap="round"/></g>
+      <g id="bytezLeftArm"><path d="M60 140 Q25 135 24 173" fill="none" stroke="#08090b" stroke-width="20" stroke-linecap="round"/></g>
+      <g id="bytezRightArm"><path d="M180 140 Q215 135 216 173" fill="none" stroke="#08090b" stroke-width="20" stroke-linecap="round"/></g>
+      <g id="bytezLeftLeg"><path d="M72 165 Q37 162 36 200" fill="none" stroke="#08090b" stroke-width="20" stroke-linecap="round"/></g>
+      <g id="bytezRightLeg"><path d="M168 165 Q203 162 204 200" fill="none" stroke="#08090b" stroke-width="20" stroke-linecap="round"/></g>
     `;
     limbs.querySelectorAll('path').forEach(body => {
       body.classList.add('bytezLimbBody');
@@ -171,23 +164,6 @@ class BytezWorkAvatar extends AgentRobotAvatar {
       body.after(shine);
     });
     this._headMotion.prepend(limbs);
-    const costume = document.createElementNS(SVG_NS, 'g');
-    costume.id = 'bytezCostume';
-    costume.innerHTML = `
-      <path d="M57 179 Q120 195 183 179" fill="none" stroke="#999" stroke-width="10" stroke-linecap="round"/>
-      <rect x="109" y="181" width="22" height="19" rx="4" fill="#fff"/>
-      <rect x="115" y="186" width="10" height="9" rx="1" fill="#666"/>
-      <path d="M62 180 Q80 184 96 186" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2" stroke-linecap="round"/>
-      <g id="bytezHelmet" transform="translate(120 82) scale(0.83) translate(-120 -82)">
-        <path d="M44 74 Q48 24 98 20 Q120 8 142 20 Q192 24 196 74" fill="url(#bytezHelmetFinish)" stroke="#08090b" stroke-width="6" stroke-linecap="round"/>
-        <path d="M54 69 Q57 42 74 34 L78 63 Z M166 34 Q184 43 187 69 L162 63 Z" fill="#e6e6e6"/>
-        <path d="M97 22 L103 57 M143 22 L137 57" fill="none" stroke="#08090b" stroke-width="6" stroke-linecap="round"/>
-        <path d="M43 68 Q120 52 197 68 Q212 72 205 83 Q199 90 193 88 Q120 72 47 88 Q33 89 34 79 Q34 72 43 68 Z" fill="url(#bytezHelmetFinish)" stroke="#08090b" stroke-width="6" stroke-linejoin="round"/>
-        <path d="M67 48 Q76 31 91 29" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-        <path d="M50 87 Q120 73 190 87" fill="none" stroke="#333" stroke-width="7" stroke-linecap="round"/>
-      </g>
-    `;
-    this._headMotion.append(costume);
     this._bytezHandsFront = document.createElementNS(SVG_NS, 'g');
     this._bytezHandsFront.id = 'bytezHandsFront';
     this._headMotion.append(this._bytezHandsFront);
@@ -196,7 +172,6 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     this._bytezRightArm = this.shadowRoot.getElementById('bytezRightArm');
     this._bytezLeftLeg = this.shadowRoot.getElementById('bytezLeftLeg');
     this._bytezRightLeg = this.shadowRoot.getElementById('bytezRightLeg');
-    this._bytezHelmet = this.shadowRoot.getElementById('bytezHelmet');
     // Separate wrappers let the engine animate each eye without overwriting its chosen size.
     this._bytezEyeScales = [this._leftEye, this._rightEye].map((eye, i) => {
       const group = document.createElementNS(SVG_NS, 'g');
@@ -233,8 +208,8 @@ class BytezWorkAvatar extends AgentRobotAvatar {
       handBlend = t * t * (3 - 2 * t);
     }
     this._poseHands(handBlend);
-    this._bytezLeftArm.setAttribute('transform', `rotate(${swing.toFixed(2)} 60 154)`);
-    this._bytezRightArm.setAttribute('transform', `rotate(${(-swing).toFixed(2)} 180 154)`);
+    this._bytezLeftArm.setAttribute('transform', `rotate(${swing.toFixed(2)} 60 140)`);
+    this._bytezRightArm.setAttribute('transform', `rotate(${(-swing).toFixed(2)} 180 140)`);
 
     // Tiny alternating steps, with no separate animation loop or timers.
     const legSwing = swing * 0.6;
@@ -242,9 +217,9 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     const leftLift = -Math.max(0, Math.sin(phase)) * lift;
     const rightLift = -Math.max(0, -Math.sin(phase)) * lift;
     this._bytezLeftLeg.setAttribute('transform',
-      `translate(0 ${leftLift.toFixed(2)}) rotate(${legSwing.toFixed(2)} 88 195)`);
+      `translate(0 ${leftLift.toFixed(2)}) rotate(${legSwing.toFixed(2)} 72 165)`);
     this._bytezRightLeg.setAttribute('transform',
-      `translate(0 ${rightLift.toFixed(2)}) rotate(${(-legSwing).toFixed(2)} 152 195)`);
+      `translate(0 ${rightLift.toFixed(2)}) rotate(${(-legSwing).toFixed(2)} 168 165)`);
   }
 }
 
