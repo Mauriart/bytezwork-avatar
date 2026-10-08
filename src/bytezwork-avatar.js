@@ -1,9 +1,57 @@
 import AgentRobotAvatar from '../agent-robot-avatar.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
+const DESIGN = {
+  'eye-size': [100, 40, 140],
+  'helmet-size': [90, 55, 110],
+  'arm-length': [100, 60, 140],
+  'leg-length': [100, 60, 160],
+  'arm-thickness': [32, 12, 44],
+  'leg-thickness': [32, 12, 44],
+};
 
 // Reuse the upstream eye, action, gesture and lifecycle engine with BytezWork artwork.
 class BytezWorkAvatar extends AgentRobotAvatar {
+  static get observedAttributes() {
+    return [...super.observedAttributes, ...Object.keys(DESIGN)];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    if (oldValue !== newValue && Object.hasOwn(DESIGN, name)) this._applyDesign();
+  }
+
+  _designValue(name) {
+    const [fallback, min, max] = DESIGN[name];
+    const raw = this.getAttribute(name);
+    const value = raw === null || raw.trim() === '' ? fallback : Number(raw);
+    return Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : fallback;
+  }
+
+  _applyDesign() {
+    if (!this._bytezHelmet) return;
+    const eyes = this._designValue('eye-size') / 100;
+    this._bytezEyeScales.forEach((group, i) => {
+      const x = i === 0 ? 86 : 154;
+      group.setAttribute('transform', `translate(${x} 126) scale(${eyes}) translate(${-x} -126)`);
+    });
+    this._bytezHelmet.setAttribute('transform',
+      `translate(120 82) scale(${this._designValue('helmet-size') / 100}) translate(-120 -82)`);
+    const arms = this._designValue('arm-length') / 100;
+    const legs = this._designValue('leg-length') / 100;
+    // Length changes the curve only, so thickness stays independently adjustable.
+    const paths = [
+      [this._bytezLeftArm, [60, 154, -31, 1, -31, 24], arms, 'arm-thickness'],
+      [this._bytezRightArm, [180, 154, 31, 1, 31, 24], arms, 'arm-thickness'],
+      [this._bytezLeftLeg, [88, 195, -6, 6, -6, 12], legs, 'leg-thickness'],
+      [this._bytezRightLeg, [152, 195, 6, 6, 6, 12], legs, 'leg-thickness'],
+    ];
+    paths.forEach(([limb, [x, y, cx, cy, dx, dy], length, thickness]) => {
+      const path = limb.querySelector('path');
+      path.setAttribute('d', `M${x} ${y} Q${x + cx * length} ${y + cy * length} ${x + dx * length} ${y + dy * length}`);
+      path.setAttribute('stroke-width', this._designValue(thickness));
+    });
+  }
   _renderShell() {
     super._renderShell();
     const svg = this.shadowRoot.querySelector('svg');
@@ -50,7 +98,17 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     this._bytezRightArm = this.shadowRoot.getElementById('bytezRightArm');
     this._bytezLeftLeg = this.shadowRoot.getElementById('bytezLeftLeg');
     this._bytezRightLeg = this.shadowRoot.getElementById('bytezRightLeg');
+    this._bytezHelmet = this.shadowRoot.getElementById('bytezHelmet');
+    // Separate wrappers let the engine animate each eye without overwriting its chosen size.
+    this._bytezEyeScales = [this._leftEye, this._rightEye].map((eye, i) => {
+      const group = document.createElementNS(SVG_NS, 'g');
+      group.id = i === 0 ? 'bytezLeftEyeSize' : 'bytezRightEyeSize';
+      eye.parentNode.insertBefore(group, eye);
+      group.append(eye);
+      return group;
+    });
     this._applyColor(this.getAttribute('color'));
+    this._applyDesign();
   }
 
   _applyColor(value) {

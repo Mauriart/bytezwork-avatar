@@ -2,30 +2,64 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BytezWork — Arañita interactiva</title>
+<title>BytezWork — Ajustá tu arañita</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f7f7f5;color:#171717;font:16px/1.5 system-ui,sans-serif}
-main{max-width:980px;margin:auto;padding:32px 24px 48px}header{display:flex;justify-content:space-between;align-items:center;gap:16px}
-header strong{font-size:20px;letter-spacing:-.7px}header span{color:#707070;font-size:13px}
-.stage{min-height:430px;display:grid;place-content:center;justify-items:center;gap:24px}
-.stage p{font-size:13px;color:#666;margin:0}bytezwork-avatar{--face-size:240px}
-.panel{background:#fff;border:1px solid #e6e6e1;border-radius:24px;padding:24px}
-h1{font-size:20px;letter-spacing:-.5px;margin:0 0 6px}p{color:#646464;margin:0 0 18px}
-.actions{display:flex;flex-wrap:wrap;gap:8px}button,select{font:inherit;color:inherit;border:1px solid #deded9;background:#fafaf8;border-radius:12px;padding:10px 14px;cursor:pointer}
-button:hover{background:#eee}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #171717;outline-offset:3px}
-.settings{display:flex;gap:20px;align-items:center;flex-wrap:wrap;border-top:1px solid #eee;margin-top:24px;padding-top:20px}
-label{display:flex;align-items:center;gap:8px;font-size:14px}input{accent-color:#171717}
-footer{font-size:12px;color:#777;margin-top:24px}a{color:inherit}
-@media(max-width:540px){main{padding:20px 16px}.stage{min-height:350px}header{align-items:flex-start}header span{max-width:125px;text-align:right}.panel{padding:20px}button{font-size:14px}}
+*{box-sizing:border-box}
+body{margin:0;color:#19212c;font:16px/1.5 system-ui,sans-serif;background-color:#f4f7fa;background-image:linear-gradient(#cbd5e14d 1px,transparent 1px),linear-gradient(90deg,#cbd5e14d 1px,transparent 1px);background-size:28px 28px}
+main{max-width:1120px;margin:auto;padding:32px 24px 48px}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+header strong{font-size:22px;letter-spacing:-.7px}header span{color:#657080;font-size:13px}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start}
+.stage{min-height:520px;display:grid;place-content:center;justify-items:center;gap:32px;position:sticky;top:24px;border:1px solid #dbe5ee;border-radius:28px;background:radial-gradient(ellipse at center,#ffffffb3,transparent 68%)}
+.stage p{font-size:13px;color:#586879;margin:0;padding:0 16px;text-align:center}
+bytezwork-avatar{--face-size:240px;filter:drop-shadow(0 0 5px #ffffff) drop-shadow(0 0 18px #8ee7f0b3) drop-shadow(0 0 36px #98caff80)}
+.panel{background:#ffffffed;border:1px solid #dbe3eb;border-radius:24px;padding:24px}
+h1,h2{font-size:20px;letter-spacing:-.5px;margin:0 0 6px}p{color:#657080;margin:0 0 18px}
+.editor>p{font-size:14px}
+.control{margin:18px 0}.control label{display:flex;justify-content:space-between;gap:12px;font-size:14px;font-weight:550}
+output{font-variant-numeric:tabular-nums;color:#507480;font-weight:400}
+input[type=range]{width:100%;margin:10px 0 0;accent-color:#167986;cursor:pointer}
+.actions,.editor-actions{display:flex;flex-wrap:wrap;gap:8px}
+button,select{font:inherit;color:inherit;border:1px solid #d8e2e8;background:#f7fafb;border-radius:12px;padding:10px 14px;cursor:pointer}
+button:hover{background:#eaf4f6}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #167986;outline-offset:3px}
+#copy-design{background:#193a42;color:#fff;border-color:#193a42}
+.editor-actions{margin-top:24px}.export-label{display:block;font-size:13px;margin:18px 0 8px}
+textarea{display:block;width:100%;resize:vertical;min-height:178px;border:1px solid #dbe3eb;border-radius:12px;background:#f8fafc;color:#415462;padding:12px;font:12px/1.6 ui-monospace,monospace}
+#save-status{min-height:20px;margin:10px 0 0;font-size:12px;color:#5a7280}
+.behavior{margin-top:24px}.behavior>p{font-size:14px}
+.settings{display:flex;gap:20px;align-items:center;flex-wrap:wrap;border-top:1px solid #e8edf2;margin-top:24px;padding-top:20px}
+.settings label{display:flex;align-items:center;gap:8px;font-size:14px}input[type=checkbox]{accent-color:#167986}
+footer{font-size:12px;color:#6f7b89;margin-top:24px}a{color:inherit}
+@media(max-width:820px){.workspace{grid-template-columns:1fr}.stage{position:relative;top:auto;min-height:380px}.editor{width:100%}.controls{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}}
+@media(max-width:540px){main{padding:20px 16px}header{align-items:flex-start}header span{max-width:145px;text-align:right}.panel{padding:20px}.stage{min-height:340px}button{font-size:14px}.controls{grid-template-columns:1fr}.control{margin:12px 0}}
 </style>
 </head>
 <body><main>
-<header><strong>BytezWork</strong><span>Arañita constructora · v0.1</span></header>
+<header><strong>BytezWork</strong><span>Tu arañita, a tu medida.</span></header>
+<div class="workspace">
 <section class="stage" aria-label="Vista del avatar">
 <bytezwork-avatar id="avatar" size="240" auto-sleep="0" aria-label="Arañita interactiva de BytezWork"></bytezwork-avatar>
 <p id="status" role="status" aria-live="polite">Lista para construir</p>
 </section>
-<section class="panel"><h1>Pequeña, curiosa y lista para trabajar.</h1>
+<section class="panel editor" aria-labelledby="editor-title">
+<h1 id="editor-title">Ajustá su forma.</h1>
+<p>Mové las barras hasta que quede como la imaginás. Los cambios se ven al instante.</p>
+<div class="controls">
+<div class="control"><label for="size">Tamaño <output for="size" id="size-value">240</output></label><input id="size" data-design="size" type="range" min="140" max="300" step="1" value="240"></div>
+<div class="control"><label for="eye-size">Ojos <output for="eye-size" id="eye-size-value">100 %</output></label><input id="eye-size" data-design="eye-size" type="range" min="40" max="140" step="1" value="100"></div>
+<div class="control"><label for="helmet-size">Casco <output for="helmet-size" id="helmet-size-value">90 %</output></label><input id="helmet-size" data-design="helmet-size" type="range" min="55" max="110" step="1" value="90"></div>
+<div class="control"><label for="arm-length">Largo de manos <output for="arm-length" id="arm-length-value">100 %</output></label><input id="arm-length" data-design="arm-length" type="range" min="60" max="140" step="1" value="100"></div>
+<div class="control"><label for="arm-thickness">Grosor de manos <output for="arm-thickness" id="arm-thickness-value">32</output></label><input id="arm-thickness" data-design="arm-thickness" type="range" min="12" max="44" step="1" value="32"></div>
+<div class="control"><label for="leg-length">Largo de pies <output for="leg-length" id="leg-length-value">100 %</output></label><input id="leg-length" data-design="leg-length" type="range" min="60" max="160" step="1" value="100"></div>
+<div class="control"><label for="leg-thickness">Grosor de pies <output for="leg-thickness" id="leg-thickness-value">32</output></label><input id="leg-thickness" data-design="leg-thickness" type="range" min="12" max="44" step="1" value="32"></div>
+</div>
+<div class="editor-actions"><button id="copy-design">Copiar ajustes</button><button id="reset-design">Restablecer</button></div>
+<label class="export-label" for="design-values">Cuando te guste, copiá estos ajustes y enviámelos.</label>
+<textarea id="design-values" readonly spellcheck="false" aria-label="Ajustes del avatar"></textarea>
+<p id="save-status" aria-live="polite"></p>
+</section>
+</div>
+<section class="panel behavior"><h2>Probá cómo se mueve.</h2>
 <p>Mové el cursor para guiar su mirada. También podés arrastrarla suavemente.</p>
 <div class="actions">
 <button data-action="idle">Normal</button><button data-action="inspect">Pensar</button>
@@ -38,7 +72,6 @@ footer{font-size:12px;color:#777;margin-top:24px}a{color:inherit}
 </div>
 <div class="settings">
 <label><input id="follow" type="checkbox" checked> Seguir el cursor</label>
-<label>Tamaño <input id="size" type="range" min="140" max="300" value="240"></label>
 <label>Movimiento <select id="motion"><option value="auto">Según tu dispositivo</option><option value="reduce">Reducido</option><option value="full">Completo</option></select></label>
 </div></section>
 <footer>Personaje de BytezWork. Motor basado en <a href="https://github.com/CX-ArtLab/agent-robot-avatar">Agent Robot Avatar</a> de CX ArtLab (MIT).</footer>
@@ -61,6 +94,55 @@ avatar.addEventListener('action-state', event => {
   if (event.detail.phase === 'start') status.textContent = labels[event.detail.action] || 'Construyendo';
 });
 document.getElementById('follow').addEventListener('change', event => avatar.setPointerFollow(event.target.checked));
-document.getElementById('size').addEventListener('input', event => avatar.setAttribute('size', event.target.value));
 document.getElementById('motion').addEventListener('change', event => avatar.setAttribute('motion', event.target.value));
+
+const storageKey = 'bytezwork-design-v1';
+const controls = [...document.querySelectorAll('[data-design]')];
+const configField = document.getElementById('design-values');
+const saveStatus = document.getElementById('save-status');
+const percentages = new Set(['eye-size', 'helmet-size', 'arm-length', 'leg-length']);
+function applyDesign(save = false) {
+  const config = {};
+  controls.forEach(input => {
+    const name = input.dataset.design;
+    config[name] = Number(input.value);
+    avatar.setAttribute(name, input.value);
+    document.getElementById(input.id + '-value').value = input.value + (percentages.has(name) ? ' %' : '');
+  });
+  configField.value = JSON.stringify(config, null, 2);
+  if (save) {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(config));
+      saveStatus.textContent = 'Ajustes guardados en este navegador.';
+    } catch {
+      saveStatus.textContent = 'Copiá tus ajustes para conservarlos.';
+    }
+  }
+}
+try {
+  const saved = JSON.parse(localStorage.getItem(storageKey));
+  if (saved && typeof saved === 'object') {
+    controls.forEach(input => {
+      const value = saved[input.dataset.design];
+      if (typeof value === 'number' && Number.isFinite(value)) input.value = String(value);
+    });
+  }
+} catch { /* The editor also works when browser storage is unavailable. */ }
+applyDesign();
+controls.forEach(input => input.addEventListener('input', () => applyDesign(true)));
+document.getElementById('reset-design').addEventListener('click', () => {
+  controls.forEach(input => { input.value = input.defaultValue; });
+  applyDesign(true);
+  saveStatus.textContent = 'Volviste al diseño inicial.';
+});
+document.getElementById('copy-design').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(configField.value);
+    saveStatus.textContent = '¡Copiados! Pegalos en el chat para fijar el diseño.';
+  } catch {
+    configField.focus();
+    configField.select();
+    saveStatus.textContent = 'Ajustes seleccionados. Copialos y pegalos en el chat.';
+  }
+});
 </script></body></html>

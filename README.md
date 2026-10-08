@@ -15,6 +15,25 @@ npm run dev
 
 Abrí `http://localhost:4173/demo/bytezwork.html`. La demo original del robot sigue disponible en `/demo/index.html`.
 
+## Ajustar el diseño
+
+La demo incluye barras independientes para ojos, casco, largo y grosor de manos y pies, además del tamaño general. Los cambios se aplican al instante, se guardan en este navegador y se pueden compartir con **Copiar ajustes**. **Restablecer** vuelve al diseño inicial.
+
+El fondo cuadriculado y el brillo pertenecen a la demo.
+
+Los atributos del componente admiten los mismos valores:
+
+| Atributo | Valor inicial | Rango |
+| --- | --- | --- |
+| `eye-size` | 100 | 40–140 % |
+| `helmet-size` | 90 | 55–110 % |
+| `arm-length` | 100 | 60–140 % |
+| `leg-length` | 100 | 60–160 % |
+| `arm-thickness` | 32 | 12–44 unidades SVG |
+| `leg-thickness` | 32 | 12–44 unidades SVG |
+
+Ojos y casco se escalan respecto al dibujo original. El largo de las patitas se escala respecto a sus curvas iniciales; el grosor es independiente. Los valores se limitan al rango y los vacíos o inválidos usan el valor inicial. Los atributos se pueden cambiar durante una animación.
+
 ## Integración
 
 ```html
