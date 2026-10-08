@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BytezWork — Arañita interactiva</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f7f5;color:#171717;font:16px/1.5 system-ui,sans-serif}
+main{max-width:980px;margin:auto;padding:32px 24px 48px}header{display:flex;justify-content:space-between;align-items:center;gap:16px}
+header strong{font-size:20px;letter-spacing:-.7px}header span{color:#707070;font-size:13px}
+.stage{min-height:430px;display:grid;place-content:center;justify-items:center;gap:24px}
+.stage p{font-size:13px;color:#666;margin:0}bytezwork-avatar{--face-size:240px}
+.panel{background:#fff;border:1px solid #e6e6e1;border-radius:24px;padding:24px}
+h1{font-size:20px;letter-spacing:-.5px;margin:0 0 6px}p{color:#646464;margin:0 0 18px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}button,select{font:inherit;color:inherit;border:1px solid #deded9;background:#fafaf8;border-radius:12px;padding:10px 14px;cursor:pointer}
+button:hover{background:#eee}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #171717;outline-offset:3px}
+.settings{display:flex;gap:20px;align-items:center;flex-wrap:wrap;border-top:1px solid #eee;margin-top:24px;padding-top:20px}
+label{display:flex;align-items:center;gap:8px;font-size:14px}input{accent-color:#171717}
+footer{font-size:12px;color:#777;margin-top:24px}a{color:inherit}
+@media(max-width:540px){main{padding:20px 16px}.stage{min-height:350px}header{align-items:flex-start}header span{max-width:125px;text-align:right}.panel{padding:20px}button{font-size:14px}}
+</style>
+</head>
+<body><main>
+<header><strong>BytezWork</strong><span>Arañita constructora · v0.1</span></header>
+<section class="stage" aria-label="Vista del avatar">
+<bytezwork-avatar id="avatar" size="240" auto-sleep="0" aria-label="Arañita interactiva de BytezWork"></bytezwork-avatar>
+<p id="status" role="status" aria-live="polite">Lista para construir</p>
+</section>
+<section class="panel"><h1>Pequeña, curiosa y lista para trabajar.</h1>
+<p>Mové el cursor para guiar su mirada. También podés arrastrarla suavemente.</p>
+<div class="actions">
+<button data-action="idle">Normal</button><button data-action="inspect">Pensar</button>
+<button data-action="waiting">Trabajar</button><button data-action="input">Escribir</button>
+<button data-action="send">Asentir</button><button data-action="success">Celebrar</button>
+<button data-action="surprise">Sorpresa</button><button data-action="love">Cariño</button>
+<button data-action="warning">Atención</button><button data-action="failure">Algo salió mal</button>
+<button data-action="error">Error</button><button data-action="sleep">Dormir</button>
+<button data-action="wake">Despertar</button>
+</div>
+<div class="settings">
+<label><input id="follow" type="checkbox" checked> Seguir el cursor</label>
+<label>Tamaño <input id="size" type="range" min="140" max="300" value="240"></label>
+<label>Movimiento <select id="motion"><option value="auto">Según tu dispositivo</option><option value="reduce">Reducido</option><option value="full">Completo</option></select></label>
+</div></section>
+<footer>Personaje de BytezWork. Motor basado en <a href="https://github.com/CX-ArtLab/agent-robot-avatar">Agent Robot Avatar</a> de CX ArtLab (MIT).</footer>
+</main>
+<script type="module">
+import '../bytezwork-avatar.js';
+const avatar = document.getElementById('avatar');
+const status = document.getElementById('status');
+const labels = {idle:'Lista para construir',inspect:'Pensando cómo resolverlo',waiting:'Trabajando',input:'Escribiendo',send:'Entendido',success:'¡Lo logramos!',surprise:'¡Oh!',love:'Gracias',warning:'Revisando un detalle',failure:'Probemos otra vez',error:'Necesito revisar algo',sleep:'Descansando',wake:'Ya estoy aquí'};
+document.querySelectorAll('[data-action]').forEach(button => button.addEventListener('click', () => {
+  try { Promise.resolve(avatar.play(button.dataset.action)).catch(() => { status.textContent = 'No se pudo completar el movimiento'; }); }
+  catch { status.textContent = 'No se pudo iniciar el movimiento'; }
+}));
+avatar.addEventListener('action-state', event => {
+  if (event.detail.phase === 'start') status.textContent = labels[event.detail.action] || 'Construyendo';
+});
+document.getElementById('follow').addEventListener('change', event => avatar.setPointerFollow(event.target.checked));
+document.getElementById('size').addEventListener('input', event => avatar.setAttribute('size', event.target.value));
+document.getElementById('motion').addEventListener('change', event => avatar.setAttribute('motion', event.target.value));
+</script></body></html>
