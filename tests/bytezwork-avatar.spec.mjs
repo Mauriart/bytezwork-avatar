@@ -6,7 +6,7 @@ test('BytezWork artwork loads with four limbs and no visible robot antenna', asy
   await page.goto('/demo/bytezwork.html');
   const avatar = page.locator('bytezwork-avatar');
   await expect(avatar).toBeVisible();
-  await expect(avatar).toHaveCSS('width', '240px');
+  await expect(avatar).toHaveCSS('width', '221px');
   await expect(avatar.locator('#bytezHelmet')).toBeVisible();
   await expect(avatar.locator('#bytezPlans')).toHaveCount(0);
   await expect(avatar.locator('#bytezPencil')).toHaveCount(0);
@@ -60,7 +60,7 @@ test('reduced motion keeps all four limbs still and color applies to limbs', asy
     return {
       first,
       second: limbs.map(limb => limb.getAttribute('transform')),
-      stroke: el.shadowRoot.querySelector('#bytezLimbs path').getAttribute('stroke'),
+      stroke: el.shadowRoot.querySelector('#bytezLimbs .bytezLimbBody').getAttribute('stroke'),
     };
   });
   expect(transforms.first).toEqual(transforms.second);
@@ -122,17 +122,51 @@ test('design sliders persist, export and restore the chosen proportions', async 
     return {
       before,
       after: [helmet, eye].map(part => part.getAttribute('transform')),
-      armWidth: el._bytezLeftArm.querySelector('path').getAttribute('stroke-width'),
-      legWidth: el._bytezLeftLeg.querySelector('path').getAttribute('stroke-width'),
+      armWidth: el._bytezLeftArm.querySelector('.bytezLimbBody').getAttribute('stroke-width'),
+      legWidth: el._bytezLeftLeg.querySelector('.bytezLimbBody').getAttribute('stroke-width'),
     };
   });
   expect(result.before).toEqual(result.after);
   expect(result.armWidth).toBe('36');
   expect(result.legWidth).toBe('28');
   await page.getByRole('button', { name: 'Restablecer', exact: true }).click();
-  await expect(page.locator('#eye-size')).toHaveValue('100');
-  await expect(page.locator('#helmet-size')).toHaveValue('90');
+  await expect(page.locator('#eye-size')).toHaveValue('89');
+  await expect(page.locator('#helmet-size')).toHaveValue('83');
   await page.setViewportSize({ width: 375, height: 812 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(errors).toEqual([]);
+});
+
+test('thinking brings hands to the chin and reset restores their position', async ({ page }) => {
+  await page.goto('/demo/bytezwork.html');
+  const avatar = page.locator('bytezwork-avatar');
+  await avatar.evaluate(el => {
+    el.setAttribute('motion', 'full');
+    el._testInspect = el.play('inspect');
+  });
+  await expect.poll(() => avatar.evaluate(el => Boolean(el._inspectFx))).toBe(true);
+  const result = await avatar.evaluate(el => {
+    const paths = [el._bytezLeftArm, el._bytezRightArm];
+    const curves = () => paths.map(limb => limb.querySelector('.bytezLimbBody').getAttribute('d'));
+    el._draw(el._inspectFx.start + 600);
+    const thinking = curves();
+    const inFront = paths.every(limb => limb.parentNode === el._bytezHandsFront);
+    el.setAttribute('motion', 'reduce');
+    el._draw(el._inspectFx.start + 1000);
+    const still = curves();
+    el._draw(el._inspectFx.start + 2000);
+    const later = curves();
+    el.setAttribute('color', '#303030');
+    const colors = paths.map(limb => limb.querySelector('.bytezLimbBody').getAttribute('stroke'));
+    el.reset();
+    el._draw(performance.now());
+    return { thinking, inFront, still, later, colors, rest: curves(),
+      back: paths.every(limb => limb.parentNode === el._bytezLimbs) };
+  });
+  expect(result.inFront).toBe(true);
+  expect(result.thinking).toEqual(result.still);
+  expect(result.still).toEqual(result.later);
+  expect(result.colors).toEqual(['#303030', '#303030']);
+  expect(result.back).toBe(true);
+  expect(result.rest).not.toEqual(result.thinking);
 });

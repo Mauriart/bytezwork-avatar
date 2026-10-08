@@ -15,6 +15,10 @@ npm run dev
 
 Abrí `http://localhost:4173/demo/bytezwork.html`. La demo original del robot sigue disponible en `/demo/index.html`.
 
+El diseño inicial usa los valores elegidos por Mauricio: tamaño 221, ojos 89 %, casco 83 %, manos 60 % de largo y grosor 32, pies 100 % de largo y grosor 36. Los ojos están 4 unidades más cerca del centro a cada lado. El cuerpo, el casco y las patitas tienen reflejos suaves para dar volumen.
+
+Al usar **Pensar**, las manos suben suavemente hacia la barbilla y vuelven a su posición al finalizar o cancelar la acción. Con movimiento reducido se muestra la pose estática.
+
 ## Ajustar el diseño
 
 La demo incluye barras independientes para ojos, casco, largo y grosor de manos y pies, además del tamaño general. Los cambios se aplican al instante, se guardan en este navegador y se pueden compartir con **Copiar ajustes**. **Restablecer** vuelve al diseño inicial.
@@ -25,12 +29,12 @@ Los atributos del componente admiten los mismos valores:
 
 | Atributo | Valor inicial | Rango |
 | --- | --- | --- |
-| `eye-size` | 100 | 40–140 % |
-| `helmet-size` | 90 | 55–110 % |
-| `arm-length` | 100 | 60–140 % |
+| `eye-size` | 89 | 40–140 % |
+| `helmet-size` | 83 | 55–110 % |
+| `arm-length` | 60 | 60–140 % |
 | `leg-length` | 100 | 60–160 % |
 | `arm-thickness` | 32 | 12–44 unidades SVG |
-| `leg-thickness` | 32 | 12–44 unidades SVG |
+| `leg-thickness` | 36 | 12–44 unidades SVG |
 
 Ojos y casco se escalan respecto al dibujo original. El largo de las patitas se escala respecto a sus curvas iniciales; el grosor es independiente. Los valores se limitan al rango y los vacíos o inválidos usan el valor inicial. Los atributos se pueden cambiar durante una animación.
 
@@ -38,7 +42,7 @@ Ojos y casco se escalan respecto al dibujo original. El largo de las patitas se 
 
 ```html
 <script type="module" src="./bytezwork-avatar.js"></script>
-<bytezwork-avatar size="180" motion="auto"></bytezwork-avatar>
+<bytezwork-avatar size="221" motion="auto"></bytezwork-avatar>
 ```
 
 ```js

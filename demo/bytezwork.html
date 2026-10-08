@@ -12,7 +12,7 @@ header strong{font-size:22px;letter-spacing:-.7px}header span{color:#657080;font
 .workspace{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start}
 .stage{min-height:520px;display:grid;place-content:center;justify-items:center;gap:32px;position:sticky;top:24px;border:1px solid #dbe5ee;border-radius:28px;background:radial-gradient(ellipse at center,#ffffffb3,transparent 68%)}
 .stage p{font-size:13px;color:#586879;margin:0;padding:0 16px;text-align:center}
-bytezwork-avatar{--face-size:240px;filter:drop-shadow(0 0 5px #ffffff) drop-shadow(0 0 18px #8ee7f0b3) drop-shadow(0 0 36px #98caff80)}
+bytezwork-avatar{--face-size:221px;filter:drop-shadow(0 0 5px #ffffff) drop-shadow(0 0 18px #8ee7f0b3) drop-shadow(0 0 36px #98caff80)}
 .panel{background:#ffffffed;border:1px solid #dbe3eb;border-radius:24px;padding:24px}
 h1,h2{font-size:20px;letter-spacing:-.5px;margin:0 0 6px}p{color:#657080;margin:0 0 18px}
 .editor>p{font-size:14px}
@@ -38,20 +38,20 @@ footer{font-size:12px;color:#6f7b89;margin-top:24px}a{color:inherit}
 <header><strong>BytezWork</strong><span>Tu arañita, a tu medida.</span></header>
 <div class="workspace">
 <section class="stage" aria-label="Vista del avatar">
-<bytezwork-avatar id="avatar" size="240" auto-sleep="0" aria-label="Arañita interactiva de BytezWork"></bytezwork-avatar>
+<bytezwork-avatar id="avatar" size="221" auto-sleep="0" aria-label="Arañita interactiva de BytezWork"></bytezwork-avatar>
 <p id="status" role="status" aria-live="polite">Lista para construir</p>
 </section>
 <section class="panel editor" aria-labelledby="editor-title">
 <h1 id="editor-title">Ajustá su forma.</h1>
 <p>Mové las barras hasta que quede como la imaginás. Los cambios se ven al instante.</p>
 <div class="controls">
-<div class="control"><label for="size">Tamaño <output aria-hidden="true" for="size" id="size-value">240</output></label><input id="size" data-design="size" type="range" min="140" max="300" step="1" value="240"></div>
-<div class="control"><label for="eye-size">Ojos <output aria-hidden="true" for="eye-size" id="eye-size-value">100 %</output></label><input id="eye-size" data-design="eye-size" type="range" min="40" max="140" step="1" value="100"></div>
-<div class="control"><label for="helmet-size">Casco <output aria-hidden="true" for="helmet-size" id="helmet-size-value">90 %</output></label><input id="helmet-size" data-design="helmet-size" type="range" min="55" max="110" step="1" value="90"></div>
-<div class="control"><label for="arm-length">Largo de manos <output aria-hidden="true" for="arm-length" id="arm-length-value">100 %</output></label><input id="arm-length" data-design="arm-length" type="range" min="60" max="140" step="1" value="100"></div>
+<div class="control"><label for="size">Tamaño <output aria-hidden="true" for="size" id="size-value">221</output></label><input id="size" data-design="size" type="range" min="140" max="300" step="1" value="221"></div>
+<div class="control"><label for="eye-size">Ojos <output aria-hidden="true" for="eye-size" id="eye-size-value">89 %</output></label><input id="eye-size" data-design="eye-size" type="range" min="40" max="140" step="1" value="89"></div>
+<div class="control"><label for="helmet-size">Casco <output aria-hidden="true" for="helmet-size" id="helmet-size-value">83 %</output></label><input id="helmet-size" data-design="helmet-size" type="range" min="55" max="110" step="1" value="83"></div>
+<div class="control"><label for="arm-length">Largo de manos <output aria-hidden="true" for="arm-length" id="arm-length-value">60 %</output></label><input id="arm-length" data-design="arm-length" type="range" min="60" max="140" step="1" value="60"></div>
 <div class="control"><label for="arm-thickness">Grosor de manos <output aria-hidden="true" for="arm-thickness" id="arm-thickness-value">32</output></label><input id="arm-thickness" data-design="arm-thickness" type="range" min="12" max="44" step="1" value="32"></div>
 <div class="control"><label for="leg-length">Largo de pies <output aria-hidden="true" for="leg-length" id="leg-length-value">100 %</output></label><input id="leg-length" data-design="leg-length" type="range" min="60" max="160" step="1" value="100"></div>
-<div class="control"><label for="leg-thickness">Grosor de pies <output aria-hidden="true" for="leg-thickness" id="leg-thickness-value">32</output></label><input id="leg-thickness" data-design="leg-thickness" type="range" min="12" max="44" step="1" value="32"></div>
+<div class="control"><label for="leg-thickness">Grosor de pies <output aria-hidden="true" for="leg-thickness" id="leg-thickness-value">36</output></label><input id="leg-thickness" data-design="leg-thickness" type="range" min="12" max="44" step="1" value="36"></div>
 </div>
 <div class="editor-actions"><button id="copy-design">Copiar ajustes</button><button id="reset-design">Restablecer</button></div>
 <label class="export-label" for="design-values">Cuando te guste, copiá estos ajustes y enviámelos.</label>
@@ -96,7 +96,7 @@ avatar.addEventListener('action-state', event => {
 document.getElementById('follow').addEventListener('change', event => avatar.setPointerFollow(event.target.checked));
 document.getElementById('motion').addEventListener('change', event => avatar.setAttribute('motion', event.target.value));
 
-const storageKey = 'bytezwork-design-v1';
+const storageKey = 'bytezwork-design-v2';
 const controls = [...document.querySelectorAll('[data-design]')];
 const configField = document.getElementById('design-values');
 const saveStatus = document.getElementById('save-status');
