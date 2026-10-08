@@ -102,6 +102,20 @@ class BytezWorkAvatar extends AgentRobotAvatar {
 
     const finishes = document.createElementNS(SVG_NS, 'defs');
     finishes.innerHTML = `
+      <radialGradient id="bytezEyeFinish" cx="32%" cy="25%" r="80%">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset=".5" stop-color="#fbfdff"/>
+        <stop offset=".8" stop-color="#e5edf3"/>
+        <stop offset="1" stop-color="#bccbd6"/>
+      </radialGradient>
+      <filter id="bytezEyeInset" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="softAlpha"/>
+        <feOffset in="softAlpha" dx="-1" dy="-2" result="shiftedAlpha"/>
+        <feComposite in="SourceAlpha" in2="shiftedAlpha" operator="out" result="innerRim"/>
+        <feFlood flood-color="#304455" flood-opacity=".18" result="shade"/>
+        <feComposite in="shade" in2="innerRim" operator="in" result="innerShadow"/>
+        <feComposite in="innerShadow" in2="SourceGraphic" operator="over"/>
+      </filter>
       <radialGradient id="bytezBodyFinish" cx="28%" cy="22%" r="85%">
         <stop offset="0" stop-color="#fff" stop-opacity=".16"/>
         <stop offset=".55" stop-color="#fff" stop-opacity=".035"/>
@@ -113,6 +127,11 @@ class BytezWorkAvatar extends AgentRobotAvatar {
       </linearGradient>
     `;
     svg.prepend(finishes);
+    // Shading follows the eye shapes as they blink, stretch and change expression.
+    [this._leftBase, this._rightBase, this._leftInputBase, this._rightInputBase].forEach(eye => {
+      eye.setAttribute('fill', 'url(#bytezEyeFinish)');
+      eye.setAttribute('filter', 'url(#bytezEyeInset)');
+    });
     const depth = document.createElementNS(SVG_NS, 'g');
     depth.id = 'bytezDepth';
     depth.setAttribute('clip-path', 'url(#headClip)');
