@@ -1,6 +1,8 @@
 # BytezWork Avatar
 
-Una arañita constructora interactiva: cuerpo redondo negro, ojos blancos expresivos, cuatro patitas, casco blanco, cinturón sencillo, planos y lápiz.
+Una arañita constructora interactiva: cuerpo redondo negro, ojos blancos expresivos, cuatro patitas, casco blanco, cinturón sencillo y patitas inferiores cortas y gorditas.
+
+Las cuatro patitas se mueven suavemente en reposo y con más energía al trabajar o celebrar. Se detienen al dormir o activar movimiento reducido. Este avatar no lleva planos ni lápiz.
 
 Primera versión en SVG basada en el motor de Agent Robot Avatar. Mantiene el parpadeo, seguimiento del cursor, expresiones, arrastre elástico, estados de espera y preferencias de movimiento reducido.
 
