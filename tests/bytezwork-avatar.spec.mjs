@@ -1,5 +1,40 @@
 import { expect, test } from '@playwright/test';
 
+test('flat eyes and gentle cursor follow stay stable on direction changes', async ({ page }) => {
+  await page.goto('/demo/bytezwork.html');
+  const avatar = page.locator('bytezwork-avatar');
+  await expect(avatar).toHaveCSS('filter', 'none');
+  const result = await avatar.evaluate(el => {
+    el.setAttribute('motion', 'full');
+    el._headFollowPose = { x: 0, y: 0, rot: 0 };
+    el._headFollowVel = { x: 0, y: 0, rot: 0 };
+    el._pointer = { active: true, influence: 1, x: 48, y: 34, lastMove: 0 };
+    const step = now => { el._pointer.lastMove = now; el._updateHeadFollow(now, 16); };
+    step(16);
+    const first = el._headFollowPose.x;
+    for (let i = 2; i < 200; i++) step(i * 16);
+    const steady = { ...el._headFollowPose };
+    el._pointer.x = -48;
+    step(3200);
+    const jump = Math.abs(steady.x - el._headFollowPose.x);
+    el._pointer.active = false;
+    for (let i = 201; i < 400; i++) step(i * 16);
+    return {
+      first, steady, jump, center: { ...el._headFollowPose },
+      eyes: [el._leftBase, el._rightBase].map(eye => ({
+        fill: eye.getAttribute('fill'), filter: eye.getAttribute('filter'),
+      })),
+    };
+  });
+  expect(result.first).toBeGreaterThan(0);
+  expect(result.first).toBeLessThan(0.15);
+  expect(result.steady.x).toBeLessThanOrEqual(1.8);
+  expect(result.steady.rot).toBeLessThanOrEqual(2.2);
+  expect(result.jump).toBeLessThan(0.26);
+  expect(result.center).toEqual({ x: 0, y: 0, rot: 0 });
+  expect(result.eyes).toEqual([{ fill: '#fff', filter: null }, { fill: '#fff', filter: null }]);
+});
+
 test('BytezWork artwork loads with four limbs and no visible robot antenna', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));

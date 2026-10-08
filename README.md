@@ -15,7 +15,7 @@ npm run dev
 
 Abrí `http://localhost:4173/demo/bytezwork.html`. La demo original del robot sigue disponible en `/demo/index.html`.
 
-La silueta se inspira en la referencia de araña compartida por Mauricio. El tamaño inicial es 221, los ojos conservan el tamaño 89 % con una forma más ovalada y las patitas laterales usan largo 100 % y grosor 20. El cuerpo, los ojos y las patitas conservan reflejos suaves para dar volumen.
+La silueta se inspira en la referencia de araña compartida por Mauricio. El tamaño inicial es 221, los ojos conservan el tamaño 89 % con una forma más ovalada y las patitas laterales usan largo 100 % y grosor 20. El cuerpo y las patitas conservan reflejos suaves para dar volumen. Los ojos son blancos y planos. El seguimiento del cursor usa movimientos pequeños y transiciones graduales sin rebote.
 
 Al usar **Pensar**, las manos suben suavemente hacia la barbilla y vuelven a su posición al finalizar o cancelar la acción. Con movimiento reducido se muestra la pose estática.
 
@@ -23,7 +23,7 @@ Al usar **Pensar**, las manos suben suavemente hacia la barbilla y vuelven a su 
 
 La demo incluye barras independientes para ojos, largo y grosor de patitas superiores e inferiores, además del tamaño general. Los cambios se aplican al instante, se guardan en este navegador y se pueden compartir con **Copiar ajustes**. **Restablecer** vuelve al diseño inicial.
 
-El fondo cuadriculado y el brillo pertenecen a la demo.
+El fondo cuadriculado pertenece a la demo; el avatar no usa glow.
 
 Los atributos del componente admiten los mismos valores:
 

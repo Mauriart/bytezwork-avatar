@@ -102,21 +102,6 @@ class BytezWorkAvatar extends AgentRobotAvatar {
       <clipPath id="bytezEyeSafeClip">
         <use href="#headShape" transform="translate(24 23.72) scale(.8)"/>
       </clipPath>
-      <radialGradient id="bytezEyeFinish" cx="32%" cy="25%" r="78%">
-        <stop offset="0" stop-color="#ffffff"/>
-        <stop offset=".38" stop-color="#fbfdff"/>
-        <stop offset=".7" stop-color="#dce5ed"/>
-        <stop offset="1" stop-color="#95a7b8"/>
-      </radialGradient>
-      <filter id="bytezEyeInset" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-        <feMorphology in="SourceAlpha" operator="erode" radius="1.25" result="insetAlpha"/>
-        <feGaussianBlur in="insetAlpha" stdDeviation="2.4" result="softAlpha"/>
-        <feOffset in="softAlpha" dx="-1" dy="-1.5" result="shiftedAlpha"/>
-        <feComposite in="SourceAlpha" in2="shiftedAlpha" operator="out" result="innerRim"/>
-        <feFlood flood-color="#304455" flood-opacity=".48" result="shade"/>
-        <feComposite in="shade" in2="innerRim" operator="in" result="innerShadow"/>
-        <feComposite in="innerShadow" in2="SourceGraphic" operator="over"/>
-      </filter>
       <radialGradient id="bytezBodyFinish" cx="28%" cy="22%" r="85%">
         <stop offset="0" stop-color="#fff" stop-opacity=".16"/>
         <stop offset=".55" stop-color="#fff" stop-opacity=".035"/>
@@ -127,10 +112,10 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     // A smaller, concentric eye area keeps a visible margin in every expression.
     // It follows the same head shape when the avatar stretches.
     this._leftEye.parentNode.setAttribute('clip-path', 'url(#bytezEyeSafeClip)');
-    // Shading follows the eye shapes as they blink, stretch and change expression.
+    // Keep the oval eyes white and flat through every expression.
     [this._leftBase, this._rightBase, this._leftInputBase, this._rightInputBase].forEach(eye => {
-      eye.setAttribute('fill', 'url(#bytezEyeFinish)');
-      eye.setAttribute('filter', 'url(#bytezEyeInset)');
+      eye.setAttribute('fill', '#fff');
+      eye.removeAttribute('filter');
     });
     const depth = document.createElementNS(SVG_NS, 'g');
     depth.id = 'bytezDepth';
@@ -188,6 +173,33 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     super._applyColor(value);
     const color = this._head?.getAttribute('fill') || '#08090b';
     this.shadowRoot?.querySelectorAll('.bytezLimbBody').forEach(path => path.setAttribute('stroke', color));
+  }
+
+  _updateHeadFollow(now, dt) {
+    const pose = this._headFollowPose;
+    const velocity = this._headFollowVel;
+    velocity.x = velocity.y = velocity.rot = 0;
+    if (this._isReducedMotion?.()) {
+      pose.x = pose.y = pose.rot = 0;
+      this._headFollow?.setAttribute('transform', '');
+      return;
+    }
+    const fresh = now - this._pointer.lastMove < 900;
+    const canFollow = fresh && this._pointer.active && (this._pointer.influence || 0) > 0.03
+      && !this._dragJelly.active && !this._dragJelly.returning && !this._sleeping
+      && !this._boredRoutine && now >= (this._headCenteringUntil || 0) && !this._expressionLock;
+    const clamp = value => Math.max(-1, Math.min(1, value));
+    const x = canFollow ? clamp(this._pointer.x / 48) : 0;
+    const y = canFollow ? clamp(this._pointer.y / 34) : 0;
+    // A small range and exponential easing avoid the original spring's abrupt tilt.
+    const mix = 1 - Math.exp(-Math.max(0, Math.min(dt, 34)) / 220);
+    const targets = { x: x * 1.8, y: y * 1.8, rot: x * y * 2.2 };
+    for (const key of ['x', 'y', 'rot']) {
+      pose[key] += (targets[key] - pose[key]) * mix;
+      if (!canFollow && Math.abs(pose[key]) < 0.01) pose[key] = 0;
+    }
+    this._headFollow?.setAttribute('transform',
+      `translate(${pose.x.toFixed(2)} ${pose.y.toFixed(2)}) translate(120 120) rotate(${pose.rot.toFixed(2)}) translate(-120 -120)`);
   }
 
   _draw(now) {
