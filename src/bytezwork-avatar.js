@@ -102,17 +102,21 @@ class BytezWorkAvatar extends AgentRobotAvatar {
 
     const finishes = document.createElementNS(SVG_NS, 'defs');
     finishes.innerHTML = `
-      <radialGradient id="bytezEyeFinish" cx="32%" cy="25%" r="80%">
+      <clipPath id="bytezEyeSafeClip">
+        <use href="#headShape" transform="translate(24 25.96) scale(.8)"/>
+      </clipPath>
+      <radialGradient id="bytezEyeFinish" cx="32%" cy="25%" r="78%">
         <stop offset="0" stop-color="#ffffff"/>
-        <stop offset=".5" stop-color="#fbfdff"/>
-        <stop offset=".8" stop-color="#e5edf3"/>
-        <stop offset="1" stop-color="#bccbd6"/>
+        <stop offset=".38" stop-color="#fbfdff"/>
+        <stop offset=".7" stop-color="#dce5ed"/>
+        <stop offset="1" stop-color="#95a7b8"/>
       </radialGradient>
       <filter id="bytezEyeInset" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="softAlpha"/>
-        <feOffset in="softAlpha" dx="-1" dy="-2" result="shiftedAlpha"/>
+        <feMorphology in="SourceAlpha" operator="erode" radius="1.25" result="insetAlpha"/>
+        <feGaussianBlur in="insetAlpha" stdDeviation="2.4" result="softAlpha"/>
+        <feOffset in="softAlpha" dx="-1" dy="-1.5" result="shiftedAlpha"/>
         <feComposite in="SourceAlpha" in2="shiftedAlpha" operator="out" result="innerRim"/>
-        <feFlood flood-color="#304455" flood-opacity=".18" result="shade"/>
+        <feFlood flood-color="#304455" flood-opacity=".48" result="shade"/>
         <feComposite in="shade" in2="innerRim" operator="in" result="innerShadow"/>
         <feComposite in="innerShadow" in2="SourceGraphic" operator="over"/>
       </filter>
@@ -127,6 +131,9 @@ class BytezWorkAvatar extends AgentRobotAvatar {
       </linearGradient>
     `;
     svg.prepend(finishes);
+    // A smaller, concentric eye area keeps a visible margin in every expression.
+    // It follows the same head shape when the avatar stretches.
+    this._leftEye.parentNode.setAttribute('clip-path', 'url(#bytezEyeSafeClip)');
     // Shading follows the eye shapes as they blink, stretch and change expression.
     [this._leftBase, this._rightBase, this._leftInputBase, this._rightInputBase].forEach(eye => {
       eye.setAttribute('fill', 'url(#bytezEyeFinish)');
