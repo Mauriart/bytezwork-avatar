@@ -24,8 +24,8 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     const limbs = document.createElementNS(SVG_NS, 'g');
     limbs.id = 'bytezLimbs';
     limbs.innerHTML = `
-      <g id="bytezLeftArm"><path d="M60 154 Q29 155 29 178" fill="none" stroke="#08090b" stroke-width="22" stroke-linecap="round"/></g>
-      <g id="bytezRightArm"><path d="M180 154 Q211 155 211 178" fill="none" stroke="#08090b" stroke-width="22" stroke-linecap="round"/></g>
+      <g id="bytezLeftArm"><path d="M60 154 Q29 155 29 178" fill="none" stroke="#08090b" stroke-width="32" stroke-linecap="round"/></g>
+      <g id="bytezRightArm"><path d="M180 154 Q211 155 211 178" fill="none" stroke="#08090b" stroke-width="32" stroke-linecap="round"/></g>
       <g id="bytezLeftLeg"><path d="M88 195 Q82 201 82 207" fill="none" stroke="#08090b" stroke-width="32" stroke-linecap="round"/></g>
       <g id="bytezRightLeg"><path d="M152 195 Q158 201 158 207" fill="none" stroke="#08090b" stroke-width="32" stroke-linecap="round"/></g>
     `;
@@ -36,7 +36,7 @@ class BytezWorkAvatar extends AgentRobotAvatar {
       <path d="M57 179 Q120 195 183 179" fill="none" stroke="#999" stroke-width="10" stroke-linecap="round"/>
       <rect x="109" y="181" width="22" height="19" rx="4" fill="#fff"/>
       <rect x="115" y="186" width="10" height="9" rx="1" fill="#666"/>
-      <g id="bytezHelmet">
+      <g id="bytezHelmet" transform="translate(120 82) scale(0.90) translate(-120 -82)">
         <path d="M44 74 Q48 24 98 20 Q120 8 142 20 Q192 24 196 74" fill="#fff" stroke="#08090b" stroke-width="6" stroke-linecap="round"/>
         <path d="M54 69 Q57 42 74 34 L78 63 Z M166 34 Q184 43 187 69 L162 63 Z" fill="#e6e6e6"/>
         <path d="M97 22 L103 57 M143 22 L137 57" fill="none" stroke="#08090b" stroke-width="6" stroke-linecap="round"/>
