@@ -71,7 +71,7 @@ test('reduced motion keeps all four limbs still and color applies to limbs', asy
 
 test('working animates patitas while sleep stops them', async ({ page }) => {
   await page.goto('/demo/bytezwork.html');
-  const result = await page.locator('bytezwork-avatar').evaluate(el => {
+  const result = await page.locator('bytezwork-avatar').evaluate(async el => {
     el.setAttribute('motion', 'full');
     el.startWaiting();
     el._draw(0);
@@ -80,7 +80,7 @@ test('working animates patitas while sleep stops them', async ({ page }) => {
     el._draw(330);
     const second = limbs.map(limb => limb.getAttribute('transform'));
     el.reset();
-    el.sleep();
+    await el.sleep();
     el._draw(1000);
     const asleep = limbs.map(limb => limb.getAttribute('transform'));
     el._draw(2000);
