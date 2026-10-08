@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - agent-robot-avatar.js
+      - bytezwork-avatar.js
       - src/**
       - demo/**
       - scripts/build-pages.mjs
@@ -22,7 +23,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.repository == 'CX-ArtLab/agent-robot-avatar'
+    if: github.repository == 'Mauriart/bytezwork-avatar'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
