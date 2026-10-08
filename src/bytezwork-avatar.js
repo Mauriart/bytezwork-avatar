@@ -85,7 +85,7 @@ class BytezWorkAvatar extends AgentRobotAvatar {
     const svg = this.shadowRoot.querySelector('svg');
     svg.setAttribute('aria-label', 'Arañita de BytezWork');
     const style = document.createElement('style');
-    style.textContent = ':host{--face-size:221px} #antennaDot{display:none!important} #bytezLimbs,#bytezHandsFront,#bytezDepth{pointer-events:none}';
+    style.textContent = ':host{--face-size:221px} #antennaDot{display:none!important} #bytezLimbs,#bytezHandsFront{pointer-events:none}';
     this.shadowRoot.append(style);
 
     // A sampled circle keeps the engine's elastic point-based deformation intact.
@@ -102,11 +102,6 @@ class BytezWorkAvatar extends AgentRobotAvatar {
       <clipPath id="bytezEyeSafeClip">
         <use href="#headShape" transform="translate(24 23.72) scale(.8)"/>
       </clipPath>
-      <radialGradient id="bytezBodyFinish" cx="28%" cy="22%" r="85%">
-        <stop offset="0" stop-color="#fff" stop-opacity=".16"/>
-        <stop offset=".55" stop-color="#fff" stop-opacity=".035"/>
-        <stop offset="1" stop-color="#000" stop-opacity=".16"/>
-      </radialGradient>
     `;
     svg.prepend(finishes);
     // A smaller, concentric eye area keeps a visible margin in every expression.
@@ -117,15 +112,6 @@ class BytezWorkAvatar extends AgentRobotAvatar {
       eye.setAttribute('fill', '#fff');
       eye.removeAttribute('filter');
     });
-    const depth = document.createElementNS(SVG_NS, 'g');
-    depth.id = 'bytezDepth';
-    depth.setAttribute('clip-path', 'url(#headClip)');
-    depth.innerHTML = `
-      <use href="#headShape" transform="translate(7.2 7.2) scale(.94)" fill="url(#bytezBodyFinish)"/>
-      <path d="M64 103 Q59 118 63 131" fill="none" stroke="#fff" stroke-opacity=".13" stroke-width="3" stroke-linecap="round"/>
-    `;
-    this._head.after(depth);
-
     const limbs = document.createElementNS(SVG_NS, 'g');
     limbs.id = 'bytezLimbs';
     limbs.innerHTML = `
